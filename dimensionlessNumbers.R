@@ -1,3 +1,6 @@
+source("debugLog.R")
+
+# Dimensionless number.
 
 dn <- (function() {
   args_msg <- function(...) {
@@ -8,7 +11,6 @@ dn <- (function() {
     }
     s
   }
-
 
   # Reynolds Number
   reynolds <- function(density, velocity, length, viscosity) {
@@ -38,7 +40,7 @@ dn <- (function() {
       return(NA)
     }
     if (Re <= 10000) {
-      warning("This equation should be used, when Re > 10^4")
+      WARN("This equation should be used, when Re > 10^4")
       return(NA)
     }
     0.027 * Re^0.8 * Pr * (1/3)
@@ -52,7 +54,7 @@ dn <- (function() {
       return(NA)
     }
     if (Re <= 2300 || Re >= 10000) {
-      warning("This equation should be used, when 2300 < Re < 10000")
+      WARN("This equation should be used, when 2300 < Re < 10000")
       return(NA)
     }
     0.027 * Re^0.8 * Pr * (1/3) * (1 - (6 * 10^5) / Re^1.8)
