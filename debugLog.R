@@ -6,16 +6,19 @@
 # A library for debug log. 
 
 DEBUG_LOG <- (function() {
-  FILE        <- "log/debug.log"
-  LEVEL_ERROR <- 2
-  LEVEL_WARN  <- 3
-  LEVEL_INFO  <- 4
-  LEVEL_DEBUG <- 5
-  LEVEL_TRACE <- 6
-  LEVEL       <- LEVEL_DEBUG
+  FILE      <- "log/debug.log"
+  DEF_LEVEL <- list(
+    FATAL = 1,
+    ERROR = 2,
+    WARN  = 3,
+    INFO  = 4,
+    DEBUG = 5,
+    TRACE = 6
+  )
+  LEVEL   <- DEF_LEVEL$INFO
   CONSOLE <- TRUE
   
-  INDENT <- (function(n) {
+  indent <- (function(n) {
     s <- "  "
     l <- numeric(n)
     l[1] <- ""
@@ -25,56 +28,59 @@ DEBUG_LOG <- (function() {
     l
   })(10)
   
-  OUTPUT <- function(level, indent, msg, console=TRUE) {
-    s <- paste(indent, msg, sep="")
-    if (console && DEBUG_LOG$CONSOLE) { cat(s, "\n") }
-    write( paste(level, s, sep=" "), file=DEBUG_LOG$FILE, append=TRUE )
-  }
-  
-  list(FILE=FILE, LEVEL_ERROR=LEVEL_ERROR, LEVEL_WARN=LEVEL_WARN, LEVEL_INFO=LEVEL_INFO,
-       LEVEL_DEBUG=LEVEL_DEBUG, LEVEL_TRACE=LEVEL_TRACE, LEVEL=LEVEL, CONSOLE=CONSOLE,
-       INDENT=INDENT, OUTPUT=OUTPUT)
+  list(FILE=FILE, DEF_LEVEL=DEF_LEVEL, LEVEL=LEVEL, CONSOLE=CONSOLE, indent=indent)
 })()
 
-
-TRACE <- function(..., i=0) {
-  if (DEBUG_LOG$LEVEL >= DEBUG_LOG$LEVEL_TRACE) {
-    DEBUG_LOG$OUTPUT("TRACE:", DEBUG_LOG$INDENT[i+1], sprintf(...))
-  }
-}
-
-DEBUG <- function(..., i=0) {
-  if (DEBUG_LOG$LEVEL >= DEBUG_LOG$LEVEL_DEBUG) {
-    DEBUG_LOG$OUTPUT("DEBUG:", DEBUG_LOG$INDENT[i+1], sprintf(...))
-  }
-}
-
-INFO <- function(..., i=0) {
-  if (DEBUG_LOG$LEVEL >= DEBUG_LOG$LEVEL_INFO) {
-    DEBUG_LOG$OUTPUT("INFO :", DEBUG_LOG$INDENT[i+1], sprintf(...))
-  }
-}
-
-WARN <- function(..., i=0) {
-  if (DEBUG_LOG$LEVEL >= DEBUG_LOG$LEVEL_WARN) {
-    DEBUG_LOG$OUTPUT("WARN :", DEBUG_LOG$INDENT[i+1], sprintf(...))
-    warning(sprintf(...))
+FATAL <- function(..., i=0) {
+  if (DEBUG_LOG$LEVEL >= DEBUG_LOG$DEF_LEVEL$ERROR) {
+    s <- sprintf(...)
+    write( paste("FATAL: ", DEBUG_LOG$indent[i+1], s, sep=""), file=DEBUG_LOG$FILE, append=TRUE )
+    stop(s)
   }
 }
 
 ERROR <- function(..., i=0) {
-  if (DEBUG_LOG$LEVEL >= DEBUG_LOG$LEVEL_WARN) {
-    DEBUG_LOG$OUTPUT("ERROR :", DEBUG_LOG$INDENT[i+1], sprintf(...))
-    warning(sprintf(...))
+  if (DEBUG_LOG$LEVEL >= DEBUG_LOG$DEF_LEVEL$ERROR) {
+    s <- sprintf(...)
+    write( paste("ERROR: ", DEBUG_LOG$indent[i+1], s, sep=""), file=DEBUG_LOG$FILE, append=TRUE )
+    stop(s)
+  }
+}
+
+WARN <- function(..., i=0) {
+  if (DEBUG_LOG$LEVEL >= DEBUG_LOG$DEF_LEVEL$WARN) {
+    s <- sprintf(...)
+    write( paste("WARN : ", DEBUG_LOG$indent[i+1], s, sep=""), file=DEBUG_LOG$FILE, append=TRUE )
+    warning(s)
+  }
+}
+
+INFO <- function(..., i=0, console=TRUE) {
+  if (DEBUG_LOG$LEVEL >= DEBUG_LOG$DEF_LEVEL$INFO) {
+    s <- sprintf(...)
+    if (console && DEBUG_LOG$CONSOLE) { cat(DEBUG_LOG$indent[i+1], s, "\n") }
+    write( paste("INFO : ", DEBUG_LOG$indent[i+1], s, sep=""), file=DEBUG_LOG$FILE, append=TRUE )
+  }
+}
+
+DEBUG <- function(..., i=0, console=TRUE) {
+  if (DEBUG_LOG$LEVEL >= DEBUG_LOG$DEF_LEVEL$DEBUG) {
+    s <- sprintf(...)
+    if (console && DEBUG_LOG$CONSOLE) { cat(DEBUG_LOG$indent[i+1], s, "\n") }
+    write( paste("DEBUG: ", DEBUG_LOG$indent[i+1], s, sep=""), file=DEBUG_LOG$FILE, append=TRUE )
+  }
+}
+
+TRACE <- function(..., i=0, console=TRUE) {
+  if (DEBUG_LOG$LEVEL >= DEBUG_LOG$DEF_LEVEL$TRACE) {
+    s <- sprintf(...)
+    if (console && DEBUG_LOG$CONSOLE) { cat(DEBUG_LOG$indent[i+1], s, "\n") }
+    write( paste("TRACE: ", DEBUG_LOG$indent[i+1], s, sep=""), file=DEBUG_LOG$FILE, append=TRUE )
   }
 }
 
 CAT <- function(..., i=0) {
-  if (DEBUG_LOG$LEVEL >= DEBUG_LOG$LEVEL_INFO) {
-    INFO(..., i=i)
-  } else if (DEBUG_LOG$CONSOLE) {
-    cat(paste(DEBUG_LOG$INDENT[i+1], sprintf(...), sep=""), "\n")
-  }
+  cat(sprintf(...), "\n")
 }
 
 parseList <- function(l, br=3, indent="  ") {
@@ -93,5 +99,4 @@ parseList <- function(l, br=3, indent="  ") {
   }
   paste(s, "\n", sep="")
 }
-
 
