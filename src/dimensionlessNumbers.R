@@ -1,9 +1,10 @@
-source("debugLog.R")
+source("src/debugLog.R")
 
 # Dimensionless number.
 
 
 dn <- (function() {
+
   args_msg <- function(fn, ...) {
     args <- c(...)
     
@@ -13,7 +14,7 @@ dn <- (function() {
     }
     
     if (dn$LOG == TRUE) {
-      WARN(s)
+      dl$WARN(s)
     } else {
       warning(s)
     }
@@ -26,11 +27,11 @@ dn <- (function() {
       return(NA)
     }
     Re <- (density * velocity * length) / viscosity
-    if (dn$LOG == TRUE) {
-      TRACE("dn$Reynolds()", i=i)
-      TRACE("density: %.1f [kg/m3], velocity: %.3f [m/s], length: %.3f [m], viscosity: %f [N-s/m2]",
+    if (dn$LOG) {
+      dl$TRACE("dn$Reynolds()", i=i)
+      dl$TRACE("density: %.1f [kg/m3], velocity: %.3f [m/s], length: %.3f [m], viscosity: %f [N-s/m2]",
             density, velocity, length, viscosity, i=i+1)
-      TRACE("Re: %.1f", Re, i=i+1)
+      dl$TRACE("Re: %.1f", Re, i=i+1)
     }
     Re    
   }
@@ -51,7 +52,7 @@ dn <- (function() {
       return(NA)
     }
     if (Re <= 10000) {
-      WARN("This equation is valid, when Re > 10^4")
+      dl$WARN("This equation is valid, when Re > 10^4")
       return(NA)
     }
     0.027 * Re^0.8 * Pr * (1/3)
@@ -64,7 +65,7 @@ dn <- (function() {
       return(NA)
     }
     if (Re <= 2300 || Re >= 10000) {
-      WARN("This equation is valid, when 2300 < Re < 10000")
+      dl$WARN("This equation is valid, when 2300 < Re < 10000")
       return(NA)
     }
     0.027 * Re^0.8 * Pr * (1/3) * (1 - (6 * 10^5) / Re^1.8)
@@ -79,7 +80,7 @@ dn <- (function() {
       return(NA)
     }
     if (Re*Pr < 0.2) {
-      WARN("This equation is valid, when Re*Pr >= 0.2")
+      dl$WARN("This equation is valid, when Re*Pr >= 0.2")
       return(NA)
     }
     0.3  +  (0.62 * Re^(1/2) * Pr^(1/3))  /  (1 + (0.4/Pr)^(2/3))^(1/4)  *  (1 + (Re/282000)^(5/8)) ^ (4/5)

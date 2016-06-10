@@ -31,72 +31,81 @@ DEBUG_LOG <- (function() {
   list(FILE=FILE, DEF_LEVEL=DEF_LEVEL, LEVEL=LEVEL, CONSOLE=CONSOLE, indent=indent)
 })()
 
-FATAL <- function(..., i=0) {
-  if (DEBUG_LOG$LEVEL >= DEBUG_LOG$DEF_LEVEL$ERROR) {
-    s <- sprintf(...)
-    write( paste("FATAL: ", DEBUG_LOG$indent[i+1], s, sep=""), file=DEBUG_LOG$FILE, append=TRUE )
-    stop(s)
-  }
-}
 
-ERROR <- function(..., i=0) {
-  if (DEBUG_LOG$LEVEL >= DEBUG_LOG$DEF_LEVEL$ERROR) {
-    s <- sprintf(...)
-    write( paste("ERROR: ", DEBUG_LOG$indent[i+1], s, sep=""), file=DEBUG_LOG$FILE, append=TRUE )
-    stop(s)
-  }
-}
-
-WARN <- function(..., i=0) {
-  if (DEBUG_LOG$LEVEL >= DEBUG_LOG$DEF_LEVEL$WARN) {
-    s <- sprintf(...)
-    write( paste("WARN : ", DEBUG_LOG$indent[i+1], s, sep=""), file=DEBUG_LOG$FILE, append=TRUE )
-    warning(s)
-  }
-}
-
-INFO <- function(..., i=0, console=TRUE) {
-  if (DEBUG_LOG$LEVEL >= DEBUG_LOG$DEF_LEVEL$INFO) {
-    s <- sprintf(...)
-    if (console && DEBUG_LOG$CONSOLE) { cat(DEBUG_LOG$indent[i+1], s, "\n") }
-    write( paste("INFO : ", DEBUG_LOG$indent[i+1], s, sep=""), file=DEBUG_LOG$FILE, append=TRUE )
-  }
-}
-
-DEBUG <- function(..., i=0, console=TRUE) {
-  if (DEBUG_LOG$LEVEL >= DEBUG_LOG$DEF_LEVEL$DEBUG) {
-    s <- sprintf(...)
-    if (console && DEBUG_LOG$CONSOLE) { cat(DEBUG_LOG$indent[i+1], s, "\n") }
-    write( paste("DEBUG: ", DEBUG_LOG$indent[i+1], s, sep=""), file=DEBUG_LOG$FILE, append=TRUE )
-  }
-}
-
-TRACE <- function(..., i=0, console=TRUE) {
-  if (DEBUG_LOG$LEVEL >= DEBUG_LOG$DEF_LEVEL$TRACE) {
-    s <- sprintf(...)
-    if (console && DEBUG_LOG$CONSOLE) { cat(DEBUG_LOG$indent[i+1], s, "\n") }
-    write( paste("TRACE: ", DEBUG_LOG$indent[i+1], s, sep=""), file=DEBUG_LOG$FILE, append=TRUE )
-  }
-}
-
-CAT <- function(..., i=0) {
-  cat(sprintf(...), "\n")
-}
-
-parseList <- function(l, br=3, indent="  ") {
-  s <- indent
-  counter <- 0
-  n <- names(l)
-  for (k in n) {
-    v <- l[[k]]
-    if (counter < br) {
-      s <- paste(s, sprintf("%s=%s, ", k, v), sep="")
-      counter <- counter + 1
-    } else {
-      s <- paste(s, "\n", indent, sprintf("%s=%s, ", k, v), sep="")
-      counter <- 0
+dl <- (function() {
+  FATAL <- function(..., i=0) {
+    if (DEBUG_LOG$LEVEL >= DEBUG_LOG$DEF_LEVEL$ERROR) {
+      s <- sprintf(...)
+      write( paste("FATAL: ", DEBUG_LOG$indent[i+1], s, sep=""), file=DEBUG_LOG$FILE, append=TRUE )
+      stop(s)
     }
   }
-  paste(s, "\n", sep="")
-}
+  
+  ERROR <- function(..., i=0) {
+    if (DEBUG_LOG$LEVEL >= DEBUG_LOG$DEF_LEVEL$ERROR) {
+      s <- sprintf(...)
+      write( paste("ERROR: ", DEBUG_LOG$indent[i+1], s, sep=""), file=DEBUG_LOG$FILE, append=TRUE )
+      stop(s)
+    }
+  }
+  
+  WARN <- function(..., i=0) {
+    if (DEBUG_LOG$LEVEL >= DEBUG_LOG$DEF_LEVEL$WARN) {
+      s <- sprintf(...)
+      write( paste("WARN : ", DEBUG_LOG$indent[i+1], s, sep=""), file=DEBUG_LOG$FILE, append=TRUE )
+      warning(s)
+    }
+  }
+  
+  INFO <- function(..., i=0, console=TRUE) {
+    if (DEBUG_LOG$LEVEL >= DEBUG_LOG$DEF_LEVEL$INFO) {
+      s <- sprintf(...)
+      if (console && DEBUG_LOG$CONSOLE) { cat(DEBUG_LOG$indent[i+1], s, "\n") }
+      write( paste("INFO : ", DEBUG_LOG$indent[i+1], s, sep=""), file=DEBUG_LOG$FILE, append=TRUE )
+    }
+  }
+  
+  DEBUG <- function(..., i=0, console=TRUE) {
+    if (DEBUG_LOG$LEVEL >= DEBUG_LOG$DEF_LEVEL$DEBUG) {
+      s <- sprintf(...)
+      if (console && DEBUG_LOG$CONSOLE) { cat(DEBUG_LOG$indent[i+1], s, "\n") }
+      write( paste("DEBUG: ", DEBUG_LOG$indent[i+1], s, sep=""), file=DEBUG_LOG$FILE, append=TRUE )
+    }
+  }
+  
+  TRACE <- function(..., i=0, console=TRUE) {
+    if (DEBUG_LOG$LEVEL >= DEBUG_LOG$DEF_LEVEL$TRACE) {
+      s <- sprintf(...)
+      if (console && DEBUG_LOG$CONSOLE) { cat(DEBUG_LOG$indent[i+1], s, "\n") }
+      write( paste("TRACE: ", DEBUG_LOG$indent[i+1], s, sep=""), file=DEBUG_LOG$FILE, append=TRUE )
+    }
+  }
+  
+  CAT <- function(..., i=0) {
+    cat(sprintf(...), "\n")
+  }
+  
+  parseList <- function(l, br=3, indent="  ") {
+    s <- indent
+    counter <- 0
+    n <- names(l)
+    for (k in n) {
+      v <- l[[k]]
+      if (counter < br) {
+        s <- paste(s, sprintf("%s=%s, ", k, v), sep="")
+        counter <- counter + 1
+      } else {
+        s <- paste(s, "\n", indent, sprintf("%s=%s, ", k, v), sep="")
+        counter <- 0
+      }
+    }
+    paste(s, "\n", sep="")
+  }
+  
+  list(FATAL=FATAL, ERROR=ERROR, WARN=WARN, INFO=INFO, DEBUG=DEBUG, TRACE=TRACE,
+       CAT=CAT, parseList=parseList)
+})()
+
+
+
 
