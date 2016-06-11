@@ -1,4 +1,4 @@
-source("src/debugLog.R")
+#source("src/debugLog.R")
 
 # Dimensionless number.
 
@@ -29,9 +29,8 @@ dn <- (function() {
     Re <- (density * velocity * length) / viscosity
     if (dn$LOG) {
       dl$TRACE("dn$Reynolds()", i=i)
-      dl$TRACE("density: %.1f [kg/m3], velocity: %.3f [m/s], length: %.3f [m], viscosity: %f [N-s/m2]",
-            density, velocity, length, viscosity, i=i+1)
-      dl$TRACE("Re: %.1f", Re, i=i+1)
+      dl$TRACE("density: %.1f [kg/m3], velocity: %.3f [m/s], length: %.3f [m], viscosity: %f [N-s/m2]  =>  Re: %.1f",
+               density, velocity, length, viscosity, Re, i=i+1)
     }
     Re    
   }
@@ -92,7 +91,7 @@ dn <- (function() {
     churchill_bernstein = nusselt_churchill_bernstein
   )
   
-  list(LOG = TRUE,
+  list(LOG = FALSE,
        Re=Reynolds, Reynolds=Reynolds,
        Pr=prandtl, prandtl=prandtl,
        Nu=nusselt, nusselt=nusselt

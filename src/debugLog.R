@@ -60,7 +60,7 @@ dl <- (function() {
   INFO <- function(..., i=0, console=TRUE) {
     if (DEBUG_LOG$LEVEL >= DEBUG_LOG$DEF_LEVEL$INFO) {
       s <- sprintf(...)
-      if (console && DEBUG_LOG$CONSOLE) { cat(DEBUG_LOG$indent[i+1], s, "\n") }
+      if (console && DEBUG_LOG$CONSOLE) { cat( paste(DEBUG_LOG$indent[i+1], s, "\n", sep="") ) }
       write( paste("INFO : ", DEBUG_LOG$indent[i+1], s, sep=""), file=DEBUG_LOG$FILE, append=TRUE )
     }
   }
@@ -68,7 +68,7 @@ dl <- (function() {
   DEBUG <- function(..., i=0, console=TRUE) {
     if (DEBUG_LOG$LEVEL >= DEBUG_LOG$DEF_LEVEL$DEBUG) {
       s <- sprintf(...)
-      if (console && DEBUG_LOG$CONSOLE) { cat(DEBUG_LOG$indent[i+1], s, "\n") }
+      if (console && DEBUG_LOG$CONSOLE) { cat( paste(DEBUG_LOG$indent[i+1], s, "\n", sep="") ) }
       write( paste("DEBUG: ", DEBUG_LOG$indent[i+1], s, sep=""), file=DEBUG_LOG$FILE, append=TRUE )
     }
   }
@@ -76,7 +76,7 @@ dl <- (function() {
   TRACE <- function(..., i=0, console=TRUE) {
     if (DEBUG_LOG$LEVEL >= DEBUG_LOG$DEF_LEVEL$TRACE) {
       s <- sprintf(...)
-      if (console && DEBUG_LOG$CONSOLE) { cat(DEBUG_LOG$indent[i+1], s, "\n") }
+      if (console && DEBUG_LOG$CONSOLE) { cat( paste(DEBUG_LOG$indent[i+1], s, "\n", sep="") ) }
       write( paste("TRACE: ", DEBUG_LOG$indent[i+1], s, sep=""), file=DEBUG_LOG$FILE, append=TRUE )
     }
   }

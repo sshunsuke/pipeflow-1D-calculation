@@ -21,7 +21,11 @@ unitConverter <- (function(){
     F2C = function(F) { (F - 32) * 5 / 9 },
     
     # Pressure
-    psi2Pa = function(psi) { psi * 6894.76 }
+    psi2Pa = function(psi) { psi * 6894.76 },
+    
+    # Friction factor
+    fanning2darcy = function(fff) { fff * 4 },
+    darcy2fanning = function(dff) { dff / 4 }
   )
   
   return(l)

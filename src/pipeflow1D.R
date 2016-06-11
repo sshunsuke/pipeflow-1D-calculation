@@ -2,10 +2,11 @@ source("src/debugLog.R")
 
 source("src/unitConverter.R")
 source("src/dimensionlessNumbers.R")
+source("src/darcyWeisbach.R")
 
 # attach( dl )
 
-
+dn$LOG <- TRUE
 
 
 
